@@ -1,19 +1,42 @@
 #!/bin/bash
-NIGHTLY_URL="https://github.com/PhantomBot/nightly-build/raw/master@%7Blast%20monday%7D/PhantomBot-nightly-lin.zip"
-
 set -e
-{ for COMMAND in git wget; do which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
+
+# TODO/WISHLIST
+# - Cache, reduce downloads (prebuild on GitHub?)
+
+VERSION="master@%7Blast%20monday%7D"
+PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/$VERSION/PhantomBot-nightly-lin.zip"
+PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/$VERSION.zip"
+PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zipi"
+
+{ for COMMAND in git wget unzip; do
+	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 
 function phantombot_update() {
 	echo "Updating Phantombot... $@"
-	mkdir -p nightly-download nightly-build nightly-backup
-	wget -N "$NIGHTLY_URL" -O nightly-download/PhantomBot-nightly-lin.zip.temp
-	mv nightly-download/PhantomBot-nightly-lin.zip.temp nightly-download/PhantomBot-nightly-lin.zip
+	mkdir -pv nightly-download nightly-build nightly-backup
+
+	test -d "logs" && cp -prv "logs" nightly-build/
+	test -d "scripts/lang/custom" && cp -prv "scripts/lang/custom" nightly-build/scripts/lang/
+	test -d "dbbackup" && cp -prv "dbbackup" nightly-build/
+	test -d "addons" && cp -prv "addons" nightly-build/
+	test -d "config" && cp -prv "config" nightly-build/
+
+	wget -N "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
+		|| test "$1" == "--ignore-error" || exit 1 \
+		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
+	wget -N "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
+		|| test "$1" == "--ignore-error" || exit 1 \
+		&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
+	wget -N "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
+		|| test "$1" == "--ignore-error" || exit 1 \
+		&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
 }
 
 function self_update() {
 	echo "Self-Updating... $@"
+	git --no-pager pull || test "$1" == "--ignore-error" || exit 1
 	{ exec "$(readlink -f "$0")" --no-pull "$@"; exit 1; }
 }
 
