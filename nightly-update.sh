@@ -7,7 +7,7 @@ set -e
 VERSION="master@%7Blast%20monday%7D"
 PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/$VERSION/PhantomBot-nightly-lin.zip"
 PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/$VERSION.zip"
-PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zipi"
+PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zip"
 
 { for COMMAND in git wget unzip; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
@@ -23,6 +23,13 @@ function phantombot_update() {
 	test -d "addons" && cp -prv "addons" nightly-build/
 	test -d "config" && cp -prv "config" nightly-build/
 
+	echo Backup...
+	BACKUP_NAME="`date +%Y%m%d_%H%M%S`"
+	tar cvzf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock * #TODO --remove-files
+	tar cvzf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
+	find nightly-backup/ -type f -mtime +90 -print0 | xargs -0r rm -f
+
+	echo Download...
 	wget -N "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
 		|| test "$1" == "--ignore-error" || exit 1 \
 		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
