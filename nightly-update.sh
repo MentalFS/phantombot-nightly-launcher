@@ -16,18 +16,18 @@ cd "$(dirname "$(readlink -f "$0")")"
 function phantombot_update() {
 	echo && echo "Updating Phantombot... $@"
 	rm -rf nightly-build
-	mkdir -pv nightly-download nightly-build nightly-backup
+	mkdir -pv nightly-download nightly-backup nightly-build/data/scripts/lang
 
-	test -d "logs" && cp -prv "logs" nightly-build/
-	test -d "scripts/lang/custom" && cp -prv "scripts/lang/custom" nightly-build/scripts/lang/
-	test -d "dbbackup" && cp -prv "dbbackup" nightly-build/
-	test -d "addons" && cp -prv "addons" nightly-build/
-	test -d "config" && cp -prv "config" nightly-build/
+	test -d "logs" && cp -prv "logs" nightly-build/data/
+	test -1d "scripts/lang/custom" && cp -prv "scripts/lang/custom" nightly-build/data/scripts/lang/
+	test -d "dbbackup" && cp -prv "dbbackup" nightly-build/data/
+	test -d "addons" && cp -prv "addons" nightly-build/data/
+	test -d "config" && cp -prv "config" nightly-build/data/
 
 	echo && echo Backup...
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	tar cvzf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock --remove-files *
-	tar cvzf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
+	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
 	find nightly-backup/ -type f -mtime +90 -print0 | xargs -0r rm -f
 
 	echo && echo Download...
@@ -43,8 +43,14 @@ function phantombot_update() {
 
 	echo && echo Unpack...
 	unzip nightly-download/PhantomBot.zip -d nightly-build/PhantomBot
+	unzip nightly-download/PhantomBotDE.zip -d nightly-build/PhantomBotDE
+	unzip nightly-download/PhantomBot-Custom.zip -d nightly-build/PhantomBot-Custom
 
-	# TODO copy over
+	cp -prv nightly-build/PhantomBot/*/* .
+	cp -prv nightly-build/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
+	ln -s german scripts/lang/deutsch
+	cp -prv nightly-build/data/* .
+	# TODO Custom scripts
 
 	# rm -rf nightly-build
 }
