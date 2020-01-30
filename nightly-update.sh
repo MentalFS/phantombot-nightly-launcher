@@ -14,7 +14,8 @@ PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scrip
 cd "$(dirname "$(readlink -f "$0")")"
 
 function phantombot_update() {
-	echo "Updating Phantombot... $@"
+	echo && echo "Updating Phantombot... $@"
+	rm -rf nightly-build
 	mkdir -pv nightly-download nightly-build nightly-backup
 
 	test -d "logs" && cp -prv "logs" nightly-build/
@@ -23,13 +24,13 @@ function phantombot_update() {
 	test -d "addons" && cp -prv "addons" nightly-build/
 	test -d "config" && cp -prv "config" nightly-build/
 
-	echo Backup...
-	BACKUP_NAME="`date +%Y%m%d_%H%M%S`"
-	tar cvzf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock * #TODO --remove-files
+	echo && echo Backup...
+	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
+	tar cvzf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock --remove-files *
 	tar cvzf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
 	find nightly-backup/ -type f -mtime +90 -print0 | xargs -0r rm -f
 
-	echo Download...
+	echo && echo Download...
 	wget -N "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
 		|| test "$1" == "--ignore-error" || exit 1 \
 		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
@@ -39,6 +40,13 @@ function phantombot_update() {
 	wget -N "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
 		|| test "$1" == "--ignore-error" || exit 1 \
 		&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
+
+	echo && echo Unpack...
+	unzip nightly-download/PhantomBot.zip -d nightly-build/PhantomBot
+
+	# TODO copy over
+
+	# rm -rf nightly-build
 }
 
 function self_update() {
