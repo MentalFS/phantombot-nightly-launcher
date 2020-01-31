@@ -1,13 +1,11 @@
 #!/bin/bash
 set -e
 
-# TODO/WISHLIST
-# - Cache, reduce downloads (prebuild on GitHub?)
-
 VERSION="master@%7Blast%20monday%7D"
 PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/$VERSION/PhantomBot-nightly-lin.zip"
 PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/$VERSION.zip"
 PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zip"
+PHANTOMBOT_CUSTOM_MODULES="challenge "
 
 { for COMMAND in git wget unzip; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
@@ -28,7 +26,7 @@ function phantombot_update() {
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	tar cvzf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock --remove-files *
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
-	find nightly-backup/ -type f -mtime +90 -print0 | xargs -0r rm -f
+	find nightly-backup/ -type f -mtime +14 -print0 | xargs -0r rm -f
 
 	echo && echo Download...
 	wget -N "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
@@ -49,10 +47,13 @@ function phantombot_update() {
 	cp -prv nightly-build/PhantomBot/*/* .
 	cp -prv nightly-build/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
 	ln -s german scripts/lang/deutsch
+	mv -v nightly-build/PhantomBot-Custom/*/custom scripts/custom/cynicalteam
+	mkdir -p scripts/lang/english/custom scripts/lang/german/custom
+	mv -v nightly-build/PhantomBot-Custom/*/lang/english/custom scripts/lang/english/custom/cynicalteam
+	mv -v nightly-build/PhantomBot-Custom/*/lang/german/custom scripts/lang/german/custom/cynicalteam
 	cp -prv nightly-build/data/* .
-	# TODO Custom scripts
 
-	# rm -rf nightly-build
+	rm -rf nightly-build
 }
 
 function self_update() {
