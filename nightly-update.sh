@@ -55,7 +55,7 @@ function phantombot_update() {
 
 function self_update() {
 	echo "Self-Updating... $@"
-	git --no-pager pull || test "$1" == "--ignore-error" || exit 1
+	git --no-pager pull || exit 1
 	{ exec "$(readlink -f "$0")" --no-pull "$@"; exit 1; }
 }
 
