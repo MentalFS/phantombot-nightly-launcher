@@ -6,7 +6,7 @@ set -e
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 
-function phantombot_update() {
+function main() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/$VERSION/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/$VERSION.zip"
 	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zip"
@@ -53,7 +53,7 @@ function phantombot_update() {
 	rm -rf nightly-build
 }
 
-function self_update() {
+function pull() {
 	echo "Self-Updating... $@"
 	git --no-pager pull || exit 1
 	{ exec "$(readlink -f "$0")" --no-pull "$@"; exit 1; }
@@ -84,4 +84,4 @@ function read_parameters() {
 }
 
 read_parameters "$@"
-{ (($NO_PULL)) || self_update "$@"; phantombot_update "$@"; }
+{ (($NO_PULL)) || pull "$@"; main "$@"; }
