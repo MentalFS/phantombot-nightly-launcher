@@ -1,4 +1,6 @@
 #!/bin/bash
+BUILD="last monday" # for really daily updates: --build today
+
 set -e
 { for COMMAND in timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
@@ -8,7 +10,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 function update() {
 	echo "Updating... $@"
-	./nightly-update.sh "$@" || exit 1
+	./nightly-update.sh --build "$BUILD" || exit 1
 	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
 }
 
@@ -20,7 +22,8 @@ function read_parameters() {
 				NO_UPDATE=1
 				shift
 				;;
-			"-v"|"--version"|"--no-pull") # Update Parameters
+			"--build")
+				BUILD="$2"
 				shift
 				;;
 			"--")
@@ -36,5 +39,6 @@ function read_parameters() {
 	done
 }
 
+# Only startup - Command injection where? Script or just leave FIFO?
 read_parameters "$@"
 { (($NO_UPDATE)) || update "$@"; main "$@"; }

@@ -1,15 +1,13 @@
 #!/bin/bash
-VERSION="master@%7Blast%20monday%7D" # for really daily updates: --version master
-
 set -e
 { for COMMAND in git wget unzip; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 
 function main() {
-	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/$VERSION/PhantomBot-nightly-lin.zip"
-	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/$VERSION.zip"
-	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/$VERSION.zip"
+	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
+	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
+	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/master@{$BUILD}.zip"
 
 	echo && echo "Updating Phantombot... $@"
 	rm -rf nightly-build
@@ -25,7 +23,9 @@ function main() {
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock --remove-files *
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
-	find nightly-backup/ -type f -mtime +14 -print0 | xargs -0r rm -f
+	cd nightly-build/data && tar czf "../../nightly-backup/$BACKUP_NAME-conf.tar.gz" * && cd -
+	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
+	((UNINSTALL)) && rm -rf nightly-download nightly-build && exit
 
 	echo && echo Download...
 	wget -N "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
@@ -60,12 +60,17 @@ function pull() {
 }
 
 function read_parameters() {
+	BUILD=today
 	NO_PULL=0
+	UNINSTALL=0
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
-			"-v"|"--version")
-				VERSION="$2"
+			"--build")
+				BUILD="$2"
 				shift
+				;;
+			"--uninstall")
+				UNINSTALL=1
 				;;
 			"--no-pull")
 				NO_PULL=1
