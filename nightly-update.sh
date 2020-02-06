@@ -7,7 +7,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 function main() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
-	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/master@{$BUILD}.zip"
+#	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/master@{$BUILD}.zip"
 
 	echo && echo "Updating Phantombot... $@"
 	rm -rf nightly-build
@@ -32,22 +32,22 @@ function main() {
 		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
 	wget -N "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
 		&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
-	wget -N "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
-		&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
+#	wget -N "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
+#		&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
 
 	echo && echo Unpack...
 	unzip -q nightly-download/PhantomBot.zip -d nightly-build/PhantomBot
 	unzip -q nightly-download/PhantomBotDE.zip -d nightly-build/PhantomBotDE
-	unzip -q nightly-download/PhantomBot-Custom.zip -d nightly-build/PhantomBot-Custom
+#	unzip -q nightly-download/PhantomBot-Custom.zip -d nightly-build/PhantomBot-Custom
 	ls nightly-build/* -lh
 
 	cp -pr nightly-build/PhantomBot/*/* .
 	cp -pr nightly-build/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
 	ln -s german scripts/lang/deutsch
-	mv nightly-build/PhantomBot-Custom/*/custom scripts/custom/cynicalteam
-	mkdir -p scripts/lang/english/custom scripts/lang/german/custom
-	mv nightly-build/PhantomBot-Custom/*/lang/english/custom scripts/lang/english/custom/cynicalteam
-	mv nightly-build/PhantomBot-Custom/*/lang/german/custom scripts/lang/german/custom/cynicalteam
+#	mv nightly-build/PhantomBot-Custom/*/custom scripts/custom/cynicalteam
+#	mkdir -p scripts/lang/english/custom scripts/lang/german/custom
+#	mv nightly-build/PhantomBot-Custom/*/lang/english/custom scripts/lang/english/custom/cynicalteam
+#	mv nightly-build/PhantomBot-Custom/*/lang/german/custom scripts/lang/german/custom/cynicalteam
 	cp -pr nightly-build/data/* .
 
 	rm -rf nightly-build
