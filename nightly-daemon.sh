@@ -5,10 +5,21 @@ set -e
 { for COMMAND in timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
+exec 200>lock
 
 # find logs/pointSystem/ -type f -mmin -60 | egrep -q . || echo EXIT
 
 function startup() {
+	echo START
+}
+
+function command() {
+	if flock -n 200 || [ \! -p fifo ] ; then
+		echo  "Bot not running." >&2
+		exit 1
+	fi
+
+	echo "$COMMAND" > fifo
 }
 
 function update() {
@@ -39,8 +50,9 @@ function read_parameters() {
 		esac
 		shift
 	done
+	COMMAND="$@"
 }
 
-# Only startup - Command injection where? Script or just leave FIFO?
 read_parameters "$@"
-{ (($NO_UPDATE)) || update "$@"; startup "$@"; }
+test -n "$COMMAND" && { command "$@"; exit; }
+test -z "$COMMAND" && { (($NO_UPDATE)) || update "$@"; startup "$@"; }
