@@ -1,12 +1,30 @@
 #!/bin/bash
 set -e
-{ for COMMAND in timeout; do
+{ for COMMAND in mkfifo timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 exec 200>lock
 
 function startup() {
-	echo START
+	flock -n 200 || exit 2
+
+	# logs & rotate
+	mkdir -p logs/service
+	for ((LOG_B=15,LOG_A=14;LOG_B>0;LOG_A--,LOG_B--)); do
+		test -f logs/service/service.$LOG_A.log \
+		&& mv logs/service/service.$LOG_A.log logs/service/service.$LOG_B.log
+	done
+	test -f logs/service.log && mv logs/service.log logs/service/service.0.log
+	exec &>logs/service.log
+	exec 2>&1
+
+	# fifo
+	rm -f fifo
+	mkfifo fifo
+	trap cleanup_fifo EXIT ERR
+
+	# launch
+	. launch.sh < <(tail -f "$PWD/fifo")
 }
 
 function command() {
@@ -27,6 +45,11 @@ function command() {
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
 	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
+}
+
+function cleanup_fifo() {
+	fuser -TERM -k "$PWD/fifo" && echo FIFO TERMINATED
+	pkill -f "^tail -f $PWD/fifo\$" && echo FIFO KILLED
 }
 
 function read_parameters() {
