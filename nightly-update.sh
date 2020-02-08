@@ -4,7 +4,7 @@ set -e
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 
-function main() {
+function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
 	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/master@{$BUILD}.zip"
@@ -110,4 +110,4 @@ function read_parameters() {
 }
 
 read_parameters "$@"
-{ (($NO_PULL)) || pull "$@"; main "$@"; }
+{ (($NO_PULL)) || pull "$@"; update "$@"; }

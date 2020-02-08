@@ -8,19 +8,21 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 # find logs/pointSystem/ -type f -mmin -60 | egrep -q . || echo EXIT
 
+function startup() {
+}
+
 function update() {
-	echo "Updating... $@"
 	./nightly-update.sh --build "$BUILD" || exit 1
 	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
 }
 
 function read_parameters() {
 	NO_UPDATE=0
+
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
 			"--no-update")
 				NO_UPDATE=1
-				shift
 				;;
 			"--build")
 				BUILD="$2"
@@ -41,4 +43,4 @@ function read_parameters() {
 
 # Only startup - Command injection where? Script or just leave FIFO?
 read_parameters "$@"
-{ (($NO_UPDATE)) || update "$@"; main "$@"; }
+{ (($NO_UPDATE)) || update "$@"; startup "$@"; }
