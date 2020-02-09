@@ -26,7 +26,7 @@ function startup() {
 
 	# launch
 	echo === Launch ===
-	. launch.sh < <(tail -f "$PWD/nightly-daemon.fifo")
+	. launch.sh "$PWD" < <(tail -f "$PWD/nightly-daemon.fifo")
 }
 
 function command() {
