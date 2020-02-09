@@ -14,13 +14,14 @@ function prepare() {
 	test -f nightly-daemon.1.log && mv -f nightly-daemon.1.log nightly-daemon.2.log
 	test -f nightly-daemon.log && mv -f nightly-daemon.log nightly-daemon.1.log
 	exec &>nightly-daemon.log
+	(($SILENT)) || echo Output is redirected to $PWD/nightly-daemon.log
 	exec 2>&1
 }
 
 function startup() {
 	# fifo
 	rm -f nightly-daemon.fifo
-	mkfifo fifo
+	mkfifo nightly-daemon.fifo
 	trap cleanup_fifo EXIT ERR
 
 	# launch
@@ -40,7 +41,7 @@ function command() {
 	fi
 
 	echo "$COMMAND" > nightly-daemon.fifo
-	timeout 30s tail -f nightly-daemon.log
+	(($SILENT)) || timeout 10s tail -f nightly-daemon.log
 }
 
 function update() {
@@ -58,6 +59,7 @@ function read_parameters() {
 	BUILD="last monday"
 	NO_UPDATE=0
 	WHEN_IDLE=0
+	SILENT=0
 
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
@@ -70,6 +72,9 @@ function read_parameters() {
 				;;
 			"--when-idle")
 				WHEN_IDLE=1
+				;;
+			"--silent")
+				SILENT=1
 				;;
 			"--")
 				shift
