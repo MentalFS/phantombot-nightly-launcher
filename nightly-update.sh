@@ -31,8 +31,10 @@ function update() {
 	wget "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
 		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
 	unzip -q nightly-download/PhantomBot.zip -d nightly-temp/PhantomBot
-	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -o -name '*.ogg' -print0 | xargs -0r rm -f
+	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -print0 | xargs -0r rm -f
+	find nightly-temp/PhantomBot/*/config -type f -name '*.ogg' -print0 | xargs -0r rm -f
 	cp -pr nightly-temp/PhantomBot/*/* .
+	chmod u+x launch*.sh java-runtime-linux/bin/*
 	echo
 
 	if ((TRANSLATION)) ; then
