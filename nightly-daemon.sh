@@ -41,7 +41,7 @@ function command() {
 	fi
 
 	echo "$COMMAND" > nightly-daemon.fifo
-	(($SILENT)) || { timeout 10s tail -f nightly-daemon.log; echo; }
+	(($SILENT)) || { timeout 5s tail -f -n3 nightly-daemon.log; echo; }
 }
 
 function update() {
