@@ -5,7 +5,8 @@ set -e
 cd "$(dirname "$(readlink -f "$0")")"
 exec 200>lock
 
-function startup() {
+function prepare() {
+	# lock
 	flock -n 200 || exit 2
 
 	# logs & rotate
@@ -17,7 +18,9 @@ function startup() {
 	test -f logs/service.log && mv logs/service.log logs/service/service.0.log
 	exec &>logs/service.log
 	exec 2>&1
+}
 
+function startup() {
 	# fifo
 	rm -f fifo
 	mkfifo fifo
@@ -85,4 +88,4 @@ function read_parameters() {
 
 read_parameters "$@"
 test -n "$COMMAND" && { command "$@"; exit; }
-test -z "$COMMAND" && { (($NO_UPDATE)) || update "$@"; startup "$@"; }
+test -z "$COMMAND" && prepare && { (($NO_UPDATE)) || update "$@"; startup "$@"; }
