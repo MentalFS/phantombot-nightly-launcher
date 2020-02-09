@@ -28,7 +28,7 @@ function update() {
 	echo
 
 	echo === PhantomBot update ===
-	wget "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
+	wget -nv "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
 		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
 	unzip -q nightly-download/PhantomBot.zip -d nightly-temp/PhantomBot
 	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -print0 | xargs -0r rm -f
@@ -39,7 +39,7 @@ function update() {
 
 	if ((TRANSLATION)) ; then
 		echo === Translation ===
-		wget "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
+		wget -nv "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
 			&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
 		unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
 
@@ -50,7 +50,7 @@ function update() {
 
 	if ((CYNICAL_CUSTOM)) ; then
 		echo === Custom modules by Cynical ===
-		wget "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
+		wget -nv "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
 			&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
 		unzip -q nightly-download/PhantomBot-Custom.zip -d nightly-temp/PhantomBot-Custom
 		mv nightly-temp/PhantomBot-Custom/*/custom scripts/custom/cynicalteam
