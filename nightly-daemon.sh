@@ -3,7 +3,7 @@ set -e
 { for COMMAND in mkfifo timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
-exec 200>lock
+exec 200>nightly-daemon.lock
 
 function prepare() {
 	# lock
@@ -16,17 +16,17 @@ function prepare() {
 
 function startup() {
 	# fifo
-	rm -f fifo
+	rm -f nightly-daemon.fifo
 	mkfifo fifo
 	trap cleanup_fifo EXIT ERR
 
 	# launch
 	echo === Launch ===
-	. launch.sh < <(tail -f "$PWD/fifo")
+	. launch.sh < <(tail -f "$PWD/nightly-daemon.fifo")
 }
 
 function command() {
-	if flock -n 200 || [ \! -p fifo ] ; then
+	if flock -n 200 || [ \! -p nightly-daemon.fifo ] ; then
 		echo  "Bot not running." >&2
 		exit 1
 	fi
@@ -36,7 +36,7 @@ function command() {
 		exit 1
 	fi
 
-	echo "$COMMAND" > fifo
+	echo "$COMMAND" > nightly-daemon.fifo
 	timeout 30s tail -f nightly-daemon.log
 }
 
@@ -47,8 +47,8 @@ function update() {
 }
 
 function cleanup_fifo() {
-	fuser -TERM -k "$PWD/fifo" && echo FIFO TERMINATED
-	pkill -f "^tail -f $PWD/fifo\$" && echo FIFO KILLED
+	fuser -TERM -k "$PWD/nightly-daemon.fifo" && echo FIFO TERMINATED
+	pkill -f "^tail -f $PWD/nightly-daemon.fifo\$" && echo FIFO KILLED
 }
 
 function read_parameters() {
