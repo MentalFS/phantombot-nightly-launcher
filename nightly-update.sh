@@ -16,7 +16,8 @@ function update() {
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	mkdir -p logs scripts/lang/custom dbbackup addons config
 	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files logs scripts/lang/custom dbbackup addons config
-	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude fifo --exclude lock --remove-files *
+	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' \
+		--exclude README.md --exclude fifo --exclude lock --remove-files *
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
 	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
 	if ((UNINSTALL)) ; then
