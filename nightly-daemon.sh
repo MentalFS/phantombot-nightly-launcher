@@ -7,7 +7,7 @@ exec 200>nightly-daemon.lock
 
 function prepare() {
 	# lock
-	flock -n 200 || exit 2
+	flock -n 200 || { (($SILENT)) || echo Bot already running. >&2 ; exit 2; }
 
 	# log & rotate
 	test -f nightly-daemon.2.log && mv -f nightly-daemon.2.log nightly-daemon.3.log
@@ -31,17 +31,17 @@ function startup() {
 
 function command() {
 	if flock -n 200 || [ \! -p nightly-daemon.fifo ] ; then
-		echo  "Bot not running." >&2
+		(($SILENT)) || echo  "Bot not running." >&2
 		exit 1
 	fi
 
 	if (($WHEN_IDLE)) && find logs/pointSystem/ -type f -mmin -60 | egrep -q . ; then
-		echo  "Channel is still active." >&2
+		(($SILENT)) || echo  "Channel is still active." >&2
 		exit 1
 	fi
 
 	echo "$COMMAND" > nightly-daemon.fifo
-	(($SILENT)) || timeout 10s tail -f nightly-daemon.log
+	(($SILENT)) || { timeout 10s tail -f nightly-daemon.log; echo; }
 }
 
 function update() {
