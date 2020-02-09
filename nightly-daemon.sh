@@ -9,14 +9,8 @@ function prepare() {
 	# lock
 	flock -n 200 || exit 2
 
-	# logs & rotate
-	mkdir -p logs/service
-	for ((LOG_B=15,LOG_A=14;LOG_B>0;LOG_A--,LOG_B--)); do
-		test -f logs/service/service.$LOG_A.log \
-		&& mv logs/service/service.$LOG_A.log logs/service/service.$LOG_B.log
-	done
-	test -f logs/service.log && mv logs/service.log logs/service/service.0.log
-	exec &>logs/service.log
+	# log
+	exec &>nightly-daemon.log
 	exec 2>&1
 }
 
@@ -42,7 +36,7 @@ function command() {
 	fi
 
 	echo "$COMMAND" > fifo
-	timeout 30s tail -f logs/service.log
+	timeout 30s tail -f nightly-daemon.log
 }
 
 function update() {
