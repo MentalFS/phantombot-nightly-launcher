@@ -21,6 +21,7 @@ function startup() {
 	trap cleanup_fifo EXIT ERR
 
 	# launch
+	echo === Launch ===
 	. launch.sh < <(tail -f "$PWD/fifo")
 }
 
@@ -41,6 +42,7 @@ function command() {
 
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
+	echo
 	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
 }
 
