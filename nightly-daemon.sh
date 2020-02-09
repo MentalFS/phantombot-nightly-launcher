@@ -9,7 +9,10 @@ function prepare() {
 	# lock
 	flock -n 200 || exit 2
 
-	# log
+	# log & rotate
+	test -f nightly-daemon.2.log && mv -f nightly-daemon.2.log nightly-daemon.3.log
+	test -f nightly-daemon.1.log && mv -f nightly-daemon.1.log nightly-daemon.2.log
+	test -f nightly-daemon.log && mv -f nightly-daemon.log nightly-daemon.1.log
 	exec &>nightly-daemon.log
 	exec 2>&1
 }

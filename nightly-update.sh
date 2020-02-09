@@ -20,7 +20,7 @@ function update() {
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
 	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
 	if ((UNINSTALL)) ; then
-		rm -rf nightly-download nightly-temp nightly-daemon.fifo nightly-daemon.lock
+		rm -rf nightly-download nightly-temp nightly-daemon.fifo nightly-daemon.lock nightly-daemon*.log
 		echo Uninstalled Phantombot.
 		exit
 	fi
