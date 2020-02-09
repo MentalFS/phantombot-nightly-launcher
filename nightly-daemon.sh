@@ -88,4 +88,4 @@ function read_parameters() {
 
 read_parameters "$@"
 test -n "$COMMAND" && { command "$@"; exit; }
-test -z "$COMMAND" && prepare && { (($NO_UPDATE)) || update "$@"; startup "$@"; }
+test -z "$COMMAND" && { prepare; (($NO_UPDATE)) || update "$@"; startup "$@"; }
