@@ -7,6 +7,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
+	CYNICAL_CUSTOM_BASEURL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/raw/master@{$BUILD}"
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp
@@ -41,6 +42,22 @@ function update() {
 	unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
 	cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
 	ln -s german scripts/lang/deutsch
+	echo
+
+	echo === Extras ===
+	mkdir -p scripts/custom/games scripts/lang/english/custom/games scripts/lang/german/custom/games
+	wget -nv "$CYNICAL_CUSTOM_BASEURL/custom/games/challengeSystem/challengeSystem.js" \
+			-O nightly-download/challengeSystem.js.temp \
+		&& mv -fv nightly-download/challengeSystem.js.temp nightly-download/challengeSystem.js
+	cp -pr nightly-download/challengeSystem.js scripts/custom/games/challengeSystem.js
+	wget -nv "$CYNICAL_CUSTOM_BASEURL/lang/english/custom/games/games-challengeSystem.js" \
+			-O nightly-download/games-challengeSystem.en.js.temp \
+		&& mv -fv nightly-download/games-challengeSystem.en.js.temp nightly-download/games-challengeSystem.en.js
+	cp -pr nightly-download/games-challengeSystem.en.js scripts/lang/english/custom/games/games-challengeSystem.js
+#	wget -nv "$CYNICAL_CUSTOM_BASEURL/lang/german/custom/games/games-challengeSystem.js" \
+#			-O nightly-download/games-challengeSystem.de.js.temp \
+#		&& mv -fv nightly-download/games-challengeSystem.de.js.temp nightly-download/games-challengeSystem.de.js
+#	cp -pr nightly-download/games-challengeSystem.de.js scripts/lang/german/custom/games/games-challengeSystem.js
 	echo
 
 	echo === Finish ===
