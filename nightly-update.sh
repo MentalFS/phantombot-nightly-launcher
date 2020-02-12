@@ -7,7 +7,6 @@ cd "$(dirname "$(readlink -f "$0")")"
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
-	PHANTOMBOT_CUSTOM_URL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/archive/master@{$BUILD}.zip"
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp
@@ -36,28 +35,13 @@ function update() {
 	chmod u+x launch*.sh java-runtime-linux/bin/*
 	echo
 
-	if ((TRANSLATION)) ; then
-		echo === Translation ===
-		wget -nv "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
-			&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
-		unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
-		cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
-		ln -s german scripts/lang/deutsch
-		echo
-	fi
-
-	if ((CYNICAL_CUSTOM)) ; then
-		echo === Custom modules by Cynical ===
-		wget -nv "$PHANTOMBOT_CUSTOM_URL" -O nightly-download/PhantomBot-Custom.zip.temp \
-			&& mv -fv nightly-download/PhantomBot-Custom.zip.temp nightly-download/PhantomBot-Custom.zip
-		unzip -q nightly-download/PhantomBot-Custom.zip -d nightly-temp/PhantomBot-Custom
-		find nightly-temp/PhantomBot-Custom -name README.md -print0 | xargs -0r rm -f
-		mv nightly-temp/PhantomBot-Custom/*/custom scripts/custom/cynicalteam
-		mkdir -p scripts/lang/english/custom scripts/lang/german/custom
-		mv nightly-temp/PhantomBot-Custom/*/lang/english/custom scripts/lang/english/custom/cynicalteam
-		mv nightly-temp/PhantomBot-Custom/*/lang/german/custom scripts/lang/german/custom/cynicalteam
-		echo
-	fi
+	echo === Translation ===
+	wget -nv "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
+		&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
+	unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
+	cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
+	ln -s german scripts/lang/deutsch
+	echo
 
 	echo === Finish ===
 	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz"
@@ -75,13 +59,6 @@ function read_parameters() {
 	BUILD=today
 	NO_PULL=0
 	UNINSTALL=0
-	if [ -d scripts ]; then
-		test -L scripts/lang/deutsch && TRANSLATION=1 || TRANSLATION=0
-		test -d scripts/custom/cynicalteam && CYNICAL_CUSTOM=1 || CYNICAL_CUSTOM=0
-	else
-		TRANSLATION=1
-		CYNICAL_CUSTOM=1
-	fi
 
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
@@ -96,18 +73,6 @@ function read_parameters() {
 				;;
 			"--no-pull")
 				NO_PULL=1
-				;;
-			"--no-translation")
-				TRANSLATION=0
-				;;
-			"--with-translation")
-				TRANSLATION=1
-				;;
-			"--no-cynical")
-				CYNICAL_CUSTOM=0
-				;;
-			"--with-cynical")
-				CYNICAL_CUSTOM=1
 				;;
 			"--")
 				shift
