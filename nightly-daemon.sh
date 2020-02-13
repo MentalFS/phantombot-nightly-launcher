@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-{ for COMMAND in mkfifo timeout; do
+{ for COMMAND in flock mkfifo fuser pkill timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 exec 200>nightly-daemon.lock
