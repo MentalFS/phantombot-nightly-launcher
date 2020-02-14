@@ -27,8 +27,7 @@ function update() {
 	echo
 
 	echo === PhantomBot update ===
-	wget -nv "$PHANTOMBOT_URL" -O nightly-download/PhantomBot.zip.temp \
-		&& mv -fv nightly-download/PhantomBot.zip.temp nightly-download/PhantomBot.zip
+	download "$PHANTOMBOT_URL" nightly-download/PhantomBot.zip
 	unzip -q nightly-download/PhantomBot.zip -d nightly-temp/PhantomBot
 	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -print0 | xargs -0r rm -f
 	find nightly-temp/PhantomBot/*/config -type f -name '*.ogg' -print0 | xargs -0r rm -f
@@ -37,32 +36,31 @@ function update() {
 	echo
 
 	echo === Translation ===
-	wget -nv "$PHANTOMBOT_DE_URL" -O nightly-download/PhantomBotDE.zip.temp \
-		&& mv -fv nightly-download/PhantomBotDE.zip.temp nightly-download/PhantomBotDE.zip
+	download "$PHANTOMBOT_DE_URL" nightly-download/PhantomBotDE.zip
 	unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
 	cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
 	ln -s german scripts/lang/deutsch
 	echo
 
-	echo === Extras ===
+	echo === Challenge ===
 	mkdir -p scripts/custom/games scripts/lang/english/custom/games scripts/lang/german/custom/games
-	wget -nv "$CYNICAL_CUSTOM_BASEURL/custom/games/challengeSystem/challengeSystem.js" \
-			-O nightly-download/challengeSystem.js.temp \
-		&& mv -fv nightly-download/challengeSystem.js.temp nightly-download/challengeSystem.js
+	download "$CYNICAL_CUSTOM_BASEURL/custom/games/challengeSystem/challengeSystem.js"  nightly-download/challengeSystem.js
 	cp -pr nightly-download/challengeSystem.js scripts/custom/games/challengeSystem.js
-	wget -nv "$CYNICAL_CUSTOM_BASEURL/lang/english/custom/games/games-challengeSystem.js" \
-			-O nightly-download/games-challengeSystem.en.js.temp \
-		&& mv -fv nightly-download/games-challengeSystem.en.js.temp nightly-download/games-challengeSystem.en.js
+	download "$CYNICAL_CUSTOM_BASEURL/lang/english/custom/games/games-challengeSystem.js" nightly-download/games-challengeSystem.en.js
 	cp -pr nightly-download/games-challengeSystem.en.js scripts/lang/english/custom/games/games-challengeSystem.js
-#	wget -nv "$CYNICAL_CUSTOM_BASEURL/lang/german/custom/games/games-challengeSystem.js" \
-#			-O nightly-download/games-challengeSystem.de.js.temp \
-#		&& mv -fv nightly-download/games-challengeSystem.de.js.temp nightly-download/games-challengeSystem.de.js
+#	download "$CYNICAL_CUSTOM_BASEURL/lang/german/custom/games/games-challengeSystem.js" nightly-download/games-challengeSystem.de.js
 #	cp -pr nightly-download/games-challengeSystem.de.js scripts/lang/german/custom/games/games-challengeSystem.js
 	echo
 
 	echo === Finish ===
 	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz"
 	rm -rf nightly-temp
+}
+
+function download() {
+	URL="$1"
+	TARGET="$2"
+	wget -nv "${URL}" -O "${TARGET}.temp" && mv -fv "${TARGET}.temp" "${TARGET}"
 }
 
 function pull() {
