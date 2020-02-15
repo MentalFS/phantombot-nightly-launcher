@@ -19,7 +19,6 @@ function update() {
 	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files logs scripts/lang/custom dbbackup addons config
 	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude README.md --remove-files *
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
-	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
 	if ((UNINSTALL)) ; then
 		rm -rf nightly-download nightly-temp nightly-daemon.fifo nightly-daemon.lock nightly-daemon*.log
 		echo Uninstalled Phantombot.
@@ -63,6 +62,7 @@ function update() {
 
 	echo === Finish ===
 	echo Temporary files:
+	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
 	find nightly-download -type f -atime +1 -print0 | xargs -0r rm -f
 	rm -rf nightly-temp
 	du -sch nightly-*/
