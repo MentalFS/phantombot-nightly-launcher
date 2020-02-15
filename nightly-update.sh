@@ -62,6 +62,7 @@ function update() {
 	fi
 
 	echo === Finish ===
+	find nightly-download -type f -atime +1 -print0 | xargs -0r rm -f
 	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz"
 	rm -rf nightly-temp
 }
