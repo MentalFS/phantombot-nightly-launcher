@@ -8,6 +8,7 @@ function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
 	CYNICAL_CUSTOM_BASEURL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/raw/master@{$BUILD}"
+	PATCH="https://github.com/PhantomBot/PhantomBot/commit/2ae5ab199e138e64fc3d6c4bd30e4202ca51fca6.patch"
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp
@@ -51,6 +52,14 @@ function update() {
 #	download "$CYNICAL_CUSTOM_BASEURL/lang/german/custom/games/games-challengeSystem.js" nightly-download/games-challengeSystem.de.js
 #	cp -pr nightly-download/games-challengeSystem.de.js scripts/lang/german/custom/games/games-challengeSystem.js
 	echo
+
+	if [ -n "$PATCH" ] ; then
+		echo === Patch ===
+		download "$PATCH" "nightly-download/hotfix.patch"
+		sed 's:/javascript-source/:/scripts/:g' -i nightly-download/hotfix.patch
+		git apply --stat --apply nightly-download/hotfix.patch
+		echo
+	fi
 
 	echo === Finish ===
 	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz"
