@@ -62,9 +62,16 @@ function update() {
 	done
 
 	echo === Finish ===
+	echo Temporary files:
 	find nightly-download -type f -atime +1 -print0 | xargs -0r rm -f
-	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz"
 	rm -rf nightly-temp
+	du -sch nightly-*/
+	echo
+	echo Configuration:
+	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sort | xargs -d '\n' du -sch
+	echo
+	echo Installation:
+	du -sch . | tail -n1
 }
 
 function download() {
