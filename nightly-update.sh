@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set +e
 { for COMMAND in git wget unzip tar; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
