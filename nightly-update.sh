@@ -11,12 +11,12 @@ function update() {
 	PATCHES+=()
 
 	rm -rf nightly-temp
-	mkdir -p nightly-download nightly-backup nightly-temp
+	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
 
 	echo === Backup ===
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	mkdir -p logs scripts/lang/custom dbbackup addons config
-	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files logs scripts/lang/custom dbbackup addons config
+	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files logs scripts/lang/custom dbbackup addons config || exit 1
 	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude README.md --remove-files *
 	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh .git/
 	if ((UNINSTALL)) ; then
@@ -61,14 +61,15 @@ function update() {
 	done
 
 	echo === Finish ===
+	echo Configuration:
+	tar xzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" || exit 1
+	tar tzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sort | xargs -rd '\n' du -sch
+	echo
 	echo Temporary files:
-	find nightly-backup/ -type f -mtime +7 -print0 | xargs -0r rm -f
-	find nightly-download -type f -atime +1 -print0 | xargs -0r rm -f
+	find nightly-backup/ -type f -mtime +15 -print0 | xargs -0r rm -f
+	find nightly-download -type f -mtime +1 -print0 | xargs -0r rm -f
 	rm -rf nightly-temp
 	du -sch nightly-*/
-	echo
-	echo Configuration:
-	tar xvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sort | xargs -d '\n' du -sch
 	echo
 	echo Installation:
 	du -sch . | tail -n1
@@ -91,6 +92,7 @@ function read_parameters() {
 	BUILD=today
 	NO_PULL=0
 	UNINSTALL=0
+	CLEANUP=1
 
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
