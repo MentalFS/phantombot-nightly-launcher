@@ -8,7 +8,7 @@ function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
 	CYNICAL_CUSTOM_BASEURL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/raw/master@{$BUILD}"
-	PATCHES+=("https://github.com/PhantomBot/PhantomBot/commit/2ae5ab199e138e64fc3d6c4bd30e4202ca51fca6.patch")
+	PATCHES+=()
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
