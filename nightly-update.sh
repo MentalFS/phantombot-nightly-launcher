@@ -16,9 +16,9 @@ function update() {
 	echo === Backup ===
 	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
 	mkdir -p logs scripts/lang/custom dbbackup addons config
-	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files logs scripts/lang/custom dbbackup addons config || exit 1
-	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude 'nightly-*' --exclude README.md --exclude LICENSE --remove-files *
-	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" nightly-*.sh README.md LICENSE .git/
+	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files ./logs ./scripts/lang/custom ./dbbackup ./addons ./config || exit 1
+	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude './nightly-*' --exclude ./README.md --exclude ./LICENSE --remove-files ./*
+	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" ./nightly-*.sh ./README.md ./LICENSE ./.git/ ./.gitignore
 	if ((UNINSTALL)) ; then
 		rm -rf nightly-download nightly-temp nightly-daemon.fifo nightly-daemon.lock nightly-daemon*.log
 		echo Uninstalled Phantombot.
