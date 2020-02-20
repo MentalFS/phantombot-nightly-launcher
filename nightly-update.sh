@@ -84,6 +84,7 @@ function download() {
 function pull() {
 	echo === Self-update ===
 	git --no-pager pull || exit 1
+	git --no-pager checkout --force || exit 1
 	echo
 	{ exec "$(readlink -f "$0")" --no-pull "$@"; exit 1; }
 }
