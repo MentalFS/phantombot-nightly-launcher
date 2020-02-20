@@ -21,7 +21,7 @@ The deamon launcher is supposed to be called via cron. By default it will update
 - unzip
 
 ## Installation
-Git clone this repository. **ZIP download will not work.** Then, run `nightly-update.sh`. You can setup Phantombot with `launch.sh`. Alternatively copy an existing configuration over.
+Git clone this repository or download `nightly-update.sh`. Then, run `nightly-update.sh`. You can setup Phantombot with `launch.sh`. Alternatively copy an existing configuration over.
 
 After the initial setup you can either keep using `launch.sh` to run PhantomBot and manually update whenever you want using `nightly-update.sh`, or you can user the `nightly-daemon.sh`, which will auto-update and launch the bot.
 
