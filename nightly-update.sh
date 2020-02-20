@@ -1,6 +1,6 @@
 #!/bin/bash
 set +e
-{ for COMMAND in git wget unzip tar; do
+{ for COMMAND in git wget unzip tar sed; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
 
@@ -14,7 +14,9 @@ function update() {
 	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
 
 	echo === Backup ===
-	BACKUP_NAME="`date +%Y%m%d-%H%M%S`"
+	BOT_NAME="$(sed -n 's/^ *user= *\([^ ]*\) */\1/p' config/botlogin.txt)"
+	test -z "$BOT_NAME" && BOT_NAME="PhantomBot"
+	BACKUP_NAME="$BOT_NAME-`date +%Y%m%d.%H%M%S`"
 	mkdir -p logs scripts/lang/custom dbbackup addons config
 	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files ./logs ./scripts/lang/custom ./dbbackup ./addons ./config || exit 1
 	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude './nightly-*' --exclude ./README.md --exclude ./LICENSE --remove-files ./*
