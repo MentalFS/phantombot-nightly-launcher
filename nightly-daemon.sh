@@ -10,11 +10,10 @@ function prepare() {
 	flock -n 200 || { (($SILENT)) || echo Bot already running. >&2 ; exit 2; }
 
 	# log & rotate
-	test -f nightly-daemon.2.log && mv -f nightly-daemon.2.log nightly-daemon.3.log
-	test -f nightly-daemon.1.log && mv -f nightly-daemon.1.log nightly-daemon.2.log
-	test -f nightly-daemon.log && mv -f nightly-daemon.log nightly-daemon.1.log
-	(($SILENT)) || echo Output is redirected to $PWD/nightly-daemon.log
-	exec &>nightly-daemon.log
+	mkdir -p logs/nightly-daemon
+	(($NO_UPDATE)) || rotate_logs
+	(($SILENT)) || exec &> >(tee -a nightly-daemon.log)
+	(($SILENT)) && exec &>>nightly-daemon.log
 	exec 2>&1
 }
 
@@ -41,13 +40,22 @@ function command() {
 	fi
 
 	echo "$COMMAND" > nightly-daemon.fifo
-	(($SILENT)) || { timeout 5s tail -f -n3 nightly-daemon.log; echo; }
+	(($SILENT)) || { timeout 3s tail -f -n8 nightly-daemon.log | egrep --color '^|\[CONSOLE\]'; echo; }
 }
 
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
 	echo
 	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
+}
+
+function rotate_logs()  {
+	for ((LOG_B=15,LOG_A=14;LOG_B>0;LOG_A--,LOG_B--)); do
+		test -f nightly-daemon.$LOG_B.log && mv nightly-daemon.$LOG_B.log logs/nightly-daemon/
+		test -f logs/nightly-daemon/nightly-daemon.$LOG_A.log \
+		&& mv logs/nightly-daemon/nightly-daemon.$LOG_A.log logs/nightly-daemon/nightly-daemon.$LOG_B.log
+	done
+	test -f nightly-daemon.log && mv nightly-daemon.log logs/nightly-daemon/nightly-daemon.0.log
 }
 
 function cleanup_fifo() {

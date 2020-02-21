@@ -1,2 +1,4 @@
 *
 !nightly-*.sh
+!README.md
+!LICENSE
