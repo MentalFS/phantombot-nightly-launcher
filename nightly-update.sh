@@ -14,13 +14,13 @@ function update() {
 	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
 
 	echo === Backup ===
-	BOT_NAME="$(sed -n 's/^ *user= *\([^ ]*\) */\1/p' config/botlogin.txt)"
+	BOT_NAME="$(sed -n 's/^ *user= *\([^ ]*\) */\1/p' config/botlogin.txt 2>/dev/null)"
 	test -z "$BOT_NAME" && BOT_NAME="PhantomBot"
 	BACKUP_NAME="$BOT_NAME-`date +%Y%m%d.%H%M%S`"
 	mkdir -p logs scripts/lang/custom dbbackup addons config
-	tar cvzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" --remove-files ./logs ./scripts/lang/custom ./dbbackup ./addons ./config || exit 1
-	tar czf "nightly-backup/$BACKUP_NAME-bot.tar.gz" --exclude './nightly-*' --exclude ./README.md --exclude ./LICENSE --remove-files ./*
-	tar czf "nightly-backup/$BACKUP_NAME-bin.tar.gz" ./nightly-*.sh ./README.md ./LICENSE ./.git/ ./.gitignore
+	tar cvzf "nightly-backup/$BACKUP_NAME-data.tar.gz" --remove-files ./logs ./scripts/lang/custom ./dbbackup ./addons ./config || exit 1
+	tar czf "nightly-backup/$BACKUP_NAME-binaries.tar.gz" --exclude './nightly-*' --exclude ./README.md --exclude ./LICENSE --remove-files ./*
+	tar czf "nightly-backup/$BACKUP_NAME-launcher.tar.gz" ./nightly-*.sh ./README.md ./LICENSE ./.git/ ./.gitignore
 	if ((UNINSTALL)) ; then
 		rm -rf nightly-download nightly-temp nightly-daemon.fifo nightly-daemon.lock nightly-daemon*.log
 		echo Uninstalled Phantombot.
@@ -58,23 +58,26 @@ function update() {
 		echo === Patch $P ===
 		download "${PATCHES[$P]}" "nightly-download/hotfix_$P.patch"
 		sed 's:/javascript-source/:/scripts/:g' -i "nightly-download/hotfix_$P.patch"
-		git apply --stat --apply "nightly-download/hotfix_$P.patch" | echo "WARNING - PATCH ERROR - is it fixed in upstream?"
+		git apply --stat --apply "nightly-download/hotfix_$P.patch" | echo "WARNING - PATCH ERROR - Probably already fixed."
 		echo
 	done
 
 	echo === Finish ===
-	echo Configuration:
-	tar xzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" || exit 1
-	tar tzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sed -n 's:./\(.*\)/$:\1/:p' | sort | xargs -rd '\n' du -sch
+	echo Data/Configuration:
+	tar xzf "nightly-backup/$BACKUP_NAME-data.tar.gz" || exit 1
+	tar tzf "nightly-backup/$BACKUP_NAME-data.tar.gz" | sed -n 's:^./::;s:.*/$:\0:p' | sort | xargs -rd '\n' du -sch
 	echo
-	echo Temporary files:
+	echo Backups:
 	find nightly-backup/ -type f -mtime +15 -print0 | xargs -0r rm -f
+	du -sch nightly-backup/$BACKUP_NAME-*
+	echo
+	echo Caches:
 	find nightly-download -type f -mtime +1 -print0 | xargs -0r rm -f
 	rm -rf nightly-temp
 	du -sch nightly-*/
 	echo
 	echo Installation:
-	du -sch . | tail -n1
+	du -sh "$PWD"
 }
 
 function download() {
