@@ -65,7 +65,7 @@ function update() {
 	echo === Finish ===
 	echo Configuration:
 	tar xzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" || exit 1
-	tar tzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sort | xargs -rd '\n' du -sch
+	tar tzf "nightly-backup/$BACKUP_NAME-conf.tar.gz" | sed -n 's:./\(.*\)/$:\1:p' | sort | xargs -rd '\n' du -sch
 	echo
 	echo Temporary files:
 	find nightly-backup/ -type f -mtime +15 -print0 | xargs -0r rm -f
