@@ -46,6 +46,7 @@ function command() {
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
 	echo
+	exec &>/dev/tty
 	{ exec "$(readlink -f "$0")" --no-update --no-logrotate "$@"; exit 1; }
 }
 
