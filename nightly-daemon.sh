@@ -11,7 +11,7 @@ function prepare() {
 
 	# log & rotate
 	mkdir -p logs/nightly-daemon
-	(($NO_UPDATE)) || rotate_logs
+	(($NO_LOGROTATE)) || rotate_logs
 	(($SILENT)) || exec &> >(tee -a nightly-daemon.log)
 	(($SILENT)) && exec &>>nightly-daemon.log
 	exec 2>&1
@@ -46,7 +46,7 @@ function command() {
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
 	echo
-	{ exec "$(readlink -f "$0")" --no-update "$@"; exit 1; }
+	{ exec "$(readlink -f "$0")" --no-update --no-logrotate "$@"; exit 1; }
 }
 
 function rotate_logs()  {
@@ -66,6 +66,7 @@ function cleanup_fifo() {
 function read_parameters() {
 	BUILD="last monday"
 	NO_UPDATE=0
+	NO_LOGROTATE=0
 	WHEN_IDLE=0
 	SILENT=0
 
@@ -73,6 +74,9 @@ function read_parameters() {
 		case "$1" in
 			"--no-update")
 				NO_UPDATE=1
+				;;
+			"--no-logrotate")
+				NO_LOGROTATE=1
 				;;
 			"--build")
 				BUILD="$2"
