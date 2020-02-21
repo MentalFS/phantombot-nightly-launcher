@@ -56,6 +56,7 @@ function rotate_logs()  {
 		&& mv logs/nightly-daemon/nightly-daemon.$LOG_A.log logs/nightly-daemon/nightly-daemon.$LOG_B.log
 	done
 	test -f nightly-daemon.log && mv nightly-daemon.log logs/nightly-daemon/nightly-daemon.0.log
+	touch nightly-daemon.log
 }
 
 function cleanup_fifo() {
