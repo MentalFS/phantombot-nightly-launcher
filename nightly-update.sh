@@ -5,7 +5,7 @@ set +e
 cd "$(dirname "$(readlink -f "$0")")"
 
 function update() {
-	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-lin.zip"
+	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-$ARCH.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
 	CYNICAL_CUSTOM_BASEURL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/raw/master@{$BUILD}"
 	PATCHES+=()
@@ -101,6 +101,10 @@ function read_parameters() {
 	NO_PULL=0
 	UNINSTALL=0
 	CLEANUP=1
+
+	ARCH=lin
+	[[ "$MACHTYPE" != "x86_64"* ]] && ARCH=arm
+	[[ "$OSTYPE" == "darwin"* ]] && ARCH=mac
 
 	while [[ "$1" == -* ]] ; do
 		case "$1" in
