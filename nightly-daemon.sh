@@ -3,7 +3,7 @@ set -e
 { for COMMAND in flock mkfifo fuser pkill timeout; do
 	which "$COMMAND" >/dev/null || { echo "Could not find $COMMAND in PATH." 1>&2; exit 1; } ; done }
 cd "$(dirname "$(readlink -f "$0")")"
-exec 200>nightly-daemon.lock
+exec 100>&1 200>nightly-daemon.lock
 
 function prepare() {
 	# lock
@@ -46,7 +46,7 @@ function command() {
 function update() {
 	./nightly-update.sh --build "$BUILD" || exit 1
 	echo
-	exec &>/dev/tty
+	exec 1>&100 2>&1 100>&-
 	{ exec "$(readlink -f "$0")" --no-update --no-logrotate "$@"; exit 1; }
 }
 
