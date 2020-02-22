@@ -35,7 +35,8 @@ function update() {
 	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -print0 | xargs -0r rm -f
 	find nightly-temp/PhantomBot/*/config -type f -name '*.ogg' -print0 | xargs -0r rm -f
 	cp -pr nightly-temp/PhantomBot/*/* .
-	chmod u+x -v launch*.sh java-runtime-linux/bin/*
+	chmod u+x -v launch*.sh
+	test -d java-runtime* && chmod u+x -v java-runtime*/bin/*
 	echo
 
 	echo === Translation ===
