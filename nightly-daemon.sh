@@ -34,11 +34,6 @@ function command() {
 		exit 1
 	fi
 
-	if (($WHEN_IDLE)) && find logs/pointSystem/ -type f -mmin -60 | egrep -q . ; then
-		(($SILENT)) || echo  "Channel is still active." >&2
-		exit 1
-	fi
-
 	echo "$COMMAND" > nightly-daemon.fifo
 	(($SILENT)) || { timeout 3s tail -f -n8 nightly-daemon.log | egrep --color '^|\[CONSOLE\]'; echo; }
 }
@@ -69,7 +64,6 @@ function read_parameters() {
 	BUILD="last monday"
 	NO_UPDATE=0
 	NO_LOGROTATE=0
-	WHEN_IDLE=0
 	SILENT=0
 
 	while [[ "$1" == -* ]] ; do
@@ -83,9 +77,6 @@ function read_parameters() {
 			"--build")
 				BUILD="$2"
 				shift
-				;;
-			"--when-idle")
-				WHEN_IDLE=1
 				;;
 			"--silent")
 				SILENT=1

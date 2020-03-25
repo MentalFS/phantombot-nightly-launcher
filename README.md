@@ -38,7 +38,3 @@ Options:
 * `--silent`: Omit all output
 * `-- build <date>`: Updates to the given date instead of the default.
   * To update daily, use `--build today`.
-* ` --when-idle`: The command will only be executed when the bot has been idle for a while.
-  * At the moment idle means that *pointSystem* has been inactive for an hour.
-  * If *pointSystem* is disabled, the command will always be executed.
-  * If the bot awards offline points, the bot may never count as idle.
