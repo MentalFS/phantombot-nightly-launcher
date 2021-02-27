@@ -7,7 +7,6 @@ cd "$(dirname "$(readlink -f "$0")")"
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-$ARCH.zip"
 	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
-	CYNICAL_CUSTOM_BASEURL="https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts/raw/master@{$BUILD}"
 	PATCHES+=()
 
 	rm -rf nightly-temp
@@ -47,15 +46,6 @@ function update() {
 	ln -sv german scripts/lang/deutsch
 	echo
 
-	echo === Challenge ===
-	mkdir -p scripts/custom/games scripts/lang/english/custom/games scripts/lang/german/custom/games
-	download "$CYNICAL_CUSTOM_BASEURL/custom/games/challengeSystem/challengeSystem.js"  challengeSystem.js
-	cp -pr nightly-download/challengeSystem.js scripts/custom/games/challengeSystem.js
-	download "$CYNICAL_CUSTOM_BASEURL/lang/english/custom/games/games-challengeSystem.js" games-challengeSystem.en.js
-	cp -pr nightly-download/games-challengeSystem.en.js scripts/lang/english/custom/games/games-challengeSystem.js
-#	download "$CYNICAL_CUSTOM_BASEURL/lang/german/custom/games/games-challengeSystem.js" games-challengeSystem.de.js
-#	cp -pr nightly-download/games-challengeSystem.de.js scripts/lang/german/custom/games/games-challengeSystem.js
-	echo
 
 	for P in "${!PATCHES[@]}" ; do
 		echo === Patch $P ===
