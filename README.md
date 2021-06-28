@@ -1,6 +1,6 @@
 # PhantomBot Nighty Updater & Launcher
 
-Scripts to download nightly releases of PhantomBot (including translations and extra stuff). **This script will not work on Windows, except using WSL**.
+Scripts to download nightly releases of PhantomBot (including translations and extras). **This script will not work on Windows, except using WSL**.
 
 The deamon launcher is supposed to be called via cron. By default it will update weeky and will redirect the input to a FIFO, so it's possible to execute commands. The script will self-update before running.
 
@@ -11,7 +11,6 @@ The deamon launcher is supposed to be called via cron. By default it will update
 ## Downloaded projects
 * [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [Nightly](https://github.com/PhantomBot/nightly-build) release (Linux verion).
 * [PhantomBotDE](https://github.com/PhantomBotDE/PhantomBotDE) - only the scripts in *javascript-source/lang*.
-* [TheCynicalTeam/Phantombot-Custom-Scripts](https://github.com/TheCynicalTeam/Phantombot-Custom-Scripts) - *challengeSystem.js* including lang files.
 * Occasionally patch files from pull requests will be downloaded and applied to fix critical bugs.
 
 ## Prerequisites
