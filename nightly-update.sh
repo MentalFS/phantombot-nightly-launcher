@@ -6,7 +6,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-$ARCH.zip"
-	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
+#	PHANTOMBOT_DE_URL="https://github.com/PhantomBotDE/PhantomBotDE/archive/master@{$BUILD}.zip"
 	PATCHES+=()
 
 	rm -rf nightly-temp
@@ -39,12 +39,12 @@ function update() {
 	test -d java-runtime* && chmod u+x -v java-runtime*/bin/*
 	echo
 
-	echo === Translation ===
-	download "$PHANTOMBOT_DE_URL" PhantomBotDE.zip
-	unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
-	cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
-	ln -sv german scripts/lang/deutsch
-	echo
+#	echo === Translation ===
+#	download "$PHANTOMBOT_DE_URL" PhantomBotDE.zip
+#	unzip -q nightly-download/PhantomBotDE.zip -d nightly-temp/PhantomBotDE
+#	cp -pr nightly-temp/PhantomBotDE/*/javascript-source/lang/german scripts/lang/
+#	ln -sv german scripts/lang/deutsch
+#	echo
 
 
 	for P in "${!PATCHES[@]}" ; do
