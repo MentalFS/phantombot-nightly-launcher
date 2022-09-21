@@ -61,7 +61,7 @@ function cleanup_fifo() {
 }
 
 function read_parameters() {
-	BUILD="3 days ago"
+	BUILD="7 days ago"
 	NO_UPDATE=0
 	NO_LOGROTATE=0
 	SILENT=0
