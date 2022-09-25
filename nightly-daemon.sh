@@ -61,7 +61,7 @@ function cleanup_fifo() {
 }
 
 function read_parameters() {
-	BUILD="2022-09-18"
+	BUILD="now"
 	NO_UPDATE=0
 	NO_LOGROTATE=0
 	SILENT=0
