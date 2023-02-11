@@ -1,15 +1,15 @@
 # PhantomBot Nighty Updater & Launcher
 
-Scripts to download nightly releases of PhantomBot (including translations and extras). **This script will not work on Windows, except using WSL**.
+Scripts to download nightly releases of PhantomBot. **This script will not work on Windows, except using WSL**.
 
-The deamon launcher is supposed to be called via cron. By default it will update weeky and will redirect the input to a FIFO, so it's possible to execute commands. The script will self-update before running.
+The daemon launcher is supposed to be called via cron. By default it will update weeky and will redirect the input to a FIFO, so it's possible to execute commands. The script will self-update before running.
 
 ## Scripts
 - `nightly-update.sh` will just update the bot to the latest nightly
 - `nightly-daemon.sh` will update once a week and launch the bot with a FIFO
 
-## Downloaded projects
-* [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [Nightly](https://github.com/PhantomBot/nightly-build) release (Linux verion).
+## Used sources
+* [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [Nightly](https://github.com/PhantomBot/nightly-build) release (Linux version), including the JRE.
 * Occasionally patch files from pull requests will be downloaded and applied to fix critical bugs.
 
 ## Prerequisites
@@ -34,5 +34,4 @@ Here is a sample crontab file, assuming PhantomBot is installed at */opt/phantom
 
 Options:
 * `--silent`: Omit all output
-* `-- build <date>`: Updates to the given date instead of the default.
-  * To update daily, use `--build today`.
+* `-- build <date>`: Updates to the given date.
