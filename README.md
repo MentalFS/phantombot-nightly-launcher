@@ -9,7 +9,7 @@ The daemon launcher is supposed to be called via cron. By default it will update
 - `nightly-daemon.sh` will update once a week and launch the bot with a FIFO
 
 ## Used sources
-* [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [Nightly](https://github.com/PhantomBot/nightly-build) release (Linux version), including the JRE.
+* [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [nightly release](https://github.com/PhantomBot/nightly-build) (Linux version), including the JRE.
 * Occasionally patch files from pull requests will be downloaded and applied to fix critical bugs.
 
 ## Prerequisites
@@ -34,4 +34,4 @@ Here is a sample crontab file, assuming PhantomBot is installed at */opt/phantom
 
 Options:
 * `--silent`: Omit all output
-* `-- build <date>`: Updates to the given date.
+* `--build <date>`: Updates to the given date.

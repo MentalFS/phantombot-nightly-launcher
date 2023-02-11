@@ -28,6 +28,7 @@ function update() {
 	fi
 
 	echo === PhantomBot update ===
+	echo "Downloading Phantombot nightly release of $BUILD"
 	download "$PHANTOMBOT_URL" PhantomBot.zip
 	unzip -q nightly-download/PhantomBot.zip -d nightly-temp/PhantomBot
 	find nightly-temp/PhantomBot/*/config -type f -name '*.aac' -print0 | xargs -0r rm -f
