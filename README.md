@@ -10,7 +10,6 @@ The deamon launcher is supposed to be called via cron. By default it will update
 
 ## Downloaded projects
 * [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [Nightly](https://github.com/PhantomBot/nightly-build) release (Linux verion).
-* [PhantomBotDE](https://github.com/PhantomBotDE/PhantomBotDE) - only the scripts in *javascript-source/lang*.
 * Occasionally patch files from pull requests will be downloaded and applied to fix critical bugs.
 
 ## Prerequisites
