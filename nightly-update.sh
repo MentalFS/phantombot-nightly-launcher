@@ -78,7 +78,7 @@ function pull() {
 		git remote add -t \* -f origin "https://github.com/MentalFS/PhantomBot-Nightly.git"
 		git checkout master --force
 	fi
-	git --no-pager pull || exit 1
+	git --no-pager pull --rebase || exit 1
 	git checkout --force || exit 1
 	echo
 	{ exec "$(readlink -f "$0")" --no-pull "$@"; exit 1; }
