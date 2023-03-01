@@ -43,7 +43,7 @@ function update() {
 		echo === Patch $P ===
 		download "${PATCHES[$P]}" "nightly-download/hotfix_$P.patch"
 		sed 's:/javascript-source/:/scripts/:g' -i "nightly-download/hotfix_$P.patch"
-		git apply --stat --apply "nightly-download/hotfix_$P.patch" | echo "WARNING - PATCH ERROR - needs to be checked."
+		git apply --stat --apply "nightly-download/hotfix_$P.patch" || echo "WARNING - PATCH ERROR - needs to be checked."
 		echo
 	done
 
@@ -85,7 +85,7 @@ function pull() {
 }
 
 function read_parameters() {
-	BUILD=today
+	BUILD=now
 	NO_PULL=0
 	UNINSTALL=0
 	CLEANUP=1
