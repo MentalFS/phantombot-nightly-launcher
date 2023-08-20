@@ -39,7 +39,7 @@ function command() {
 }
 
 function update() {
-	./nightly-update.sh --build "$BUILD" || exit 1
+	./nightly-update.sh --build "$BUILD" --runtime "$RUNTIME" || exit 1
 	echo
 	exec 1>&100 2>&1 100>&-
 	{ exec "$(readlink -f "$0")" --no-update --no-logrotate "$@"; exit 1; }
@@ -62,6 +62,7 @@ function cleanup_fifo() {
 
 function read_parameters() {
 	BUILD="today"
+	RUNTIME="lin"
 	NO_UPDATE=0
 	NO_LOGROTATE=0
 	SILENT=0
@@ -71,12 +72,20 @@ function read_parameters() {
 			"--no-update")
 				NO_UPDATE=1
 				;;
-			"--no-logrotate")
-				NO_LOGROTATE=1
-				;;
 			"--build")
 				BUILD="$2"
 				shift
+				;;
+			"--runtime"
+				RUNTIME="$2"
+				shift
+				;;
+			"--no-runtime"
+				RUNTIME=""
+				shift
+				;;
+			"--no-logrotate")
+				NO_LOGROTATE=1
 				;;
 			"--silent")
 				SILENT=1

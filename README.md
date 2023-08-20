@@ -1,6 +1,6 @@
 # PhantomBot Nighty Updater & Launcher
 
-Scripts to download nightly releases of PhantomBot. **This script will not work on Windows, except using WSL**.
+Scripts to download nightly releases of PhantomBot.
 
 The daemon launcher is supposed to be called via cron. By default it will update weeky and will redirect the input to a FIFO, so it's possible to execute commands. The script will self-update before running.
 
@@ -13,8 +13,8 @@ The daemon launcher is supposed to be called via cron. By default it will update
 * Occasionally patch files from pull requests will be downloaded and applied to fix critical bugs.
 
 ## Prerequisites
-- The usual stuff that comes with Linux/Bash.
-- a current Java runtime (OpenJDK 17 or Eclipse Temurin 17 is recommended)
+- bash
+- tar
 - git
 - wget
 - unzip
@@ -35,4 +35,6 @@ Here is a sample crontab file, assuming PhantomBot is installed at */opt/phantom
 
 Options:
 * `--silent`: Omit all output
-* `--build <date>`: Updates to the given date.
+* `--build <date>`: Updates to the given date
+* `--no-runtime`: Don't download Java runtime
+* `--runtime <runtime>`: Runtime to download - `lin` (default), `arm64`, `mac` or `win`

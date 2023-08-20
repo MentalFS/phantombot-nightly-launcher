@@ -6,6 +6,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-bot.zip"
+	RUNTIME_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-${RUNTIME}-runtime.zip"
 	PATCHES+=("https://github.com/PhantomBot/PhantomBot/commit/b2b76ee7fe46ee98b866eeec69939108234abec5.patch")
 
 	rm -rf nightly-temp
@@ -36,8 +37,18 @@ function update() {
 	cp -pr  nightly-temp/PhantomBot/*/addons/ignorebots.txt nightly-temp/ignorebots.orig
 	cp -pr nightly-temp/PhantomBot/*/* .
 	chmod u+x -v launch*.sh
-	test -d java-runtime* && chmod u+x -v java-runtime*/bin/*
 	echo
+
+	if [ -n "$RUNTIME" ] ; then
+		echo === Runtime: $RUNTIME ===
+		echo "Downloading Phantombot nightly \"$RUNTIME\" Runtime of $BUILD"
+		download "$RUNTIME_URL" PhantomBot-Runtime.zip
+		unzip -q nightly-download/PhantomBot-Runtime.zip -d nightly-temp/PhantomBot-Runtime
+		cp -pr nightly-temp/PhantomBot-Runtime/*/* .
+		chmod u+x -v launch*.sh
+		test -d java-runtime* && chmod u+x -v java-runtime*/bin/*
+		echo
+	fi
 
 	for P in "${!PATCHES[@]}" ; do
 		echo === Patch $P ===
@@ -88,9 +99,9 @@ function pull() {
 
 function read_parameters() {
 	BUILD=now
+	RUNTIME="lin"
 	NO_PULL=0
 	UNINSTALL=0
-	CLEANUP=1
 
 	ARCH=lin
 	[[ "$MACHTYPE" != "x86_64"* ]] && ARCH=arm
@@ -100,6 +111,14 @@ function read_parameters() {
 		case "$1" in
 			"--build")
 				BUILD="$2"
+				shift
+				;;
+			"--runtime")
+				RUNTIME="$2"
+				shift
+				;;
+			"--no-runtime")
+				RUNTIME=""
 				shift
 				;;
 			"--uninstall")
