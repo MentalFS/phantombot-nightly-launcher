@@ -76,11 +76,11 @@ function read_parameters() {
 				BUILD="$2"
 				shift
 				;;
-			"--runtime"
+			"--runtime")
 				RUNTIME="$2"
 				shift
 				;;
-			"--no-runtime"
+			"--no-runtime")
 				RUNTIME=""
 				shift
 				;;
