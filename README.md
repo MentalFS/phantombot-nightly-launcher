@@ -14,6 +14,7 @@ The daemon launcher is supposed to be called via cron. By default it will update
 
 ## Prerequisites
 - The usual stuff that comes with Linux/Bash.
+- a current Java runtime (OpenJDK 17 or Eclipse Temurin 17 is recommended)
 - git
 - wget
 - unzip

@@ -5,8 +5,8 @@ set +e
 cd "$(dirname "$(readlink -f "$0")")"
 
 function update() {
-	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-$ARCH.zip"
-	PATCHES+=()
+	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-bot.zip"
+	PATCHES+=("https://github.com/PhantomBot/PhantomBot/commit/b2b76ee7fe46ee98b866eeec69939108234abec5.patch")
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
@@ -41,8 +41,9 @@ function update() {
 
 	for P in "${!PATCHES[@]}" ; do
 		echo === Patch $P ===
-		download "${PATCHES[$P]}" "nightly-download/hotfix_$P.patch"
+		download "${PATCHES[$P]}" "hotfix_$P.patch"
 		sed 's:/javascript-source/:/scripts/:g' -i "nightly-download/hotfix_$P.patch"
+		sed 's:/resources/:/:g' -i "nightly-download/hotfix_$P.patch"
 		git apply --stat --apply "nightly-download/hotfix_$P.patch" || echo "WARNING - PATCH ERROR - needs to be checked."
 		echo
 	done
@@ -68,6 +69,7 @@ function update() {
 function download() {
 	URL="$1"
 	TARGET="$2"
+	echo "URL '${URL}', TARGET '${TARGET}'"
 	wget -nv "${URL}" -O "nightly-temp/${TARGET}" && mv -f "nightly-temp/${TARGET}" "nightly-download/${TARGET}"
 }
 
