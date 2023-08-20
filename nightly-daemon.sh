@@ -82,7 +82,6 @@ function read_parameters() {
 				;;
 			"--no-runtime")
 				RUNTIME=""
-				shift
 				;;
 			"--no-logrotate")
 				NO_LOGROTATE=1

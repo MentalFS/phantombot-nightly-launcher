@@ -119,7 +119,6 @@ function read_parameters() {
 				;;
 			"--no-runtime")
 				RUNTIME=""
-				shift
 				;;
 			"--uninstall")
 				UNINSTALL=1
