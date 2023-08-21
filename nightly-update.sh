@@ -7,7 +7,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 function update() {
 	PHANTOMBOT_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-bot.zip"
 	RUNTIME_URL="https://github.com/PhantomBot/nightly-build/raw/master@{$BUILD}/PhantomBot-nightly-${RUNTIME}-runtime.zip"
-	PATCHES+=("https://github.com/PhantomBot/PhantomBot/commit/b2b76ee7fe46ee98b866eeec69939108234abec5.patch")
+	PATCHES+=()
 
 	rm -rf nightly-temp
 	mkdir -p nightly-download nightly-backup nightly-temp || exit 1
