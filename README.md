@@ -7,7 +7,7 @@ input to a FIFO, so it's possible to execute commands. The script will self-upda
 
 ## Scripts
 - `nightly-update.sh` will just update the bot to the latest nightly
-- `nightly-daemon.sh` will update once a week and launch the bot with a FIFO
+- `nightly-daemon.sh` will update and launch the bot with a FIFO
 
 ## Used sources
 * [PhantomBot](https://github.com/PhantomBot/PhantomBot) - downloaded from the [nightly release](https://github.com/PhantomBot/nightly-build) (Linux version), including the JRE.
