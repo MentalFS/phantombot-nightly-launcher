@@ -91,6 +91,7 @@ function pull() {
 		git remote add -t \* -f origin "https://github.com/MentalFS/phantombot-nightly-launcher.git"
 		git checkout master --force
 	fi
+ 	git remote set-url origin "https://github.com/MentalFS/phantombot-nightly-launcher.git"
 	git --no-pager pull --rebase || exit 1
 	git checkout --force || exit 1
 	echo
