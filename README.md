@@ -2,10 +2,15 @@
 
 Scripts to download nightly releases of PhantomBot.
 
+## :warning: End of life notice :warning:
+This script is not maintained anymore and will probably stop working when the nightly artifact names change.
+
+A more reliable way to run nightly build will be the [official Docker image](https://github.com/PhantomBot/nightly-build/pkgs/container/nightly-build).
+
+## Scripts
 The daemon launcher is supposed to be called via cron. By default it will update the installation and will redirect the
 input to a FIFO, so it's possible to execute commands. The script will self-update before running.
 
-## Scripts
 - `nightly-update.sh` will just update the bot to the latest nightly
 - `nightly-daemon.sh` will update and launch the bot with a FIFO
 
