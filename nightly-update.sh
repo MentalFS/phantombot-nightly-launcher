@@ -88,7 +88,7 @@ function pull() {
 	echo === Self-update ===
 	if [ ! -d .git ] ; then
 		git init .
-		git remote add -t \* -f origin "https://github.com/MentalFS/PhantomBot-Nightly.git"
+		git remote add -t \* -f origin "https://github.com/MentalFS/phantombot-nightly-launcher.git"
 		git checkout master --force
 	fi
 	git --no-pager pull --rebase || exit 1
